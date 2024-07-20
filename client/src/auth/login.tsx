@@ -1,5 +1,6 @@
 import { FormEventHandler, useState, useTransition } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import {
     Card,
@@ -15,6 +16,7 @@ import { login } from "../actions/auth";
 
 export default function Login() {
     const [isPending, startTransition] = useTransition();
+    const navigate = useNavigate();
     const [values, setValues] = useState({
         email: "",
         password: "",
@@ -40,6 +42,7 @@ export default function Login() {
         setProcessing(true);
         try {
             await login(values.email, values.password);
+            navigate("/app");
         } catch (error: any) {
             setErrors({
                 email: error.response?.data?.errors?.email || null,
@@ -100,7 +103,7 @@ export default function Login() {
                             className="w-full"
                             disabled={processing || isPending}
                         >
-                            {isPending ? "Logging in..." : "Login"}
+                            {processing ? "Logging in..." : "Login"}
                         </Button>
                     </form>
                     <div className="mt-4 text-center text-sm">
