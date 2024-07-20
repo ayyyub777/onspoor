@@ -11,19 +11,22 @@ import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Button } from "../components/ui/button";
 import { InputError } from "../components/ui/input-error";
-import { login } from "../actions/auth";
+import { register } from "../actions/auth";
 
-export default function Login() {
+export default function Register() {
     const [isPending, startTransition] = useTransition();
     const [values, setValues] = useState({
+        name: "",
         email: "",
         password: "",
-        remember: false,
+        password_confirmation: "",
     });
 
     const [errors, setErrors] = useState({
+        name: null,
         email: null,
         password: null,
+        password_confirmation: null,
     });
 
     const [processing, setProcessing] = useState(false);
@@ -36,14 +39,22 @@ export default function Login() {
         }));
     };
 
-    const handleLogin = async () => {
+    const handleRegister = async () => {
         setProcessing(true);
         try {
-            await login(values.email, values.password);
+            await register(
+                values.name,
+                values.email,
+                values.password,
+                values.password_confirmation
+            );
         } catch (error: any) {
             setErrors({
+                name: error.response?.data?.errors?.name || null,
                 email: error.response?.data?.errors?.email || null,
                 password: error.response?.data?.errors?.password || null,
+                password_confirmation:
+                    error.response?.data?.errors?.password_confirmation || null,
             });
         } finally {
             setProcessing(false);
@@ -53,7 +64,7 @@ export default function Login() {
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         startTransition(() => {
-            handleLogin();
+            handleRegister();
         });
     };
 
@@ -62,11 +73,25 @@ export default function Login() {
             <Card className="mx-auto w-[384px] max-w-sm">
                 <CardHeader>
                     <CardTitle className="text-xl leading-tight">
-                        Login
+                        Register
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
                     <form className="grid gap-4" onSubmit={submit}>
+                        <div className="grid gap-2">
+                            <Label htmlFor="name">Name</Label>
+                            <Input
+                                id="name"
+                                type="name"
+                                name="name"
+                                placeholder="Username"
+                                required
+                                value={values.name}
+                                autoComplete="username"
+                                onChange={handleInputChange}
+                            />
+                            <InputError message={errors.email} />
+                        </div>
                         <div className="grid gap-2">
                             <Label htmlFor="email">Email</Label>
                             <Input
@@ -95,18 +120,36 @@ export default function Login() {
                             />
                             <InputError message={errors.password} />
                         </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="password_confirmation">
+                                Confirm Password
+                            </Label>
+                            <Input
+                                id="password_confirmation"
+                                type="password"
+                                placeholder="••••••••"
+                                required
+                                name="password_confirmation"
+                                value={values.password_confirmation}
+                                autoComplete="current-password"
+                                onChange={handleInputChange}
+                            />
+                            <InputError
+                                message={errors.password_confirmation}
+                            />
+                        </div>
                         <Button
                             type="submit"
                             className="w-full"
                             disabled={processing || isPending}
                         >
-                            {isPending ? "Logging in..." : "Login"}
+                            {isPending ? "Registering..." : "Register"}
                         </Button>
                     </form>
                     <div className="mt-4 text-center text-sm">
-                        Don&apos;t have an account?{" "}
-                        <Link to="/register" className="underline">
-                            Register
+                        Already have an account?{" "}
+                        <Link to="/login" className="underline">
+                            Login
                         </Link>
                     </div>
                 </CardContent>
