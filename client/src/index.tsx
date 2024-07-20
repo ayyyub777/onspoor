@@ -8,6 +8,7 @@ import Login from "./auth/login";
 import Register from "./auth/register";
 import Issues from "./app/issues";
 import AppLayout from "./app/layout";
+import AuthLayout from "./auth/layout";
 
 const router = createBrowserRouter([
     {
@@ -15,12 +16,19 @@ const router = createBrowserRouter([
         element: <App />,
     },
     {
-        path: "/login",
-        element: <Login />,
-    },
-    {
-        path: "/register",
-        element: <Register />,
+        path: "/",
+        element: <AuthLayout />,
+        children: [
+            {
+                index: true,
+                path: "login",
+                element: <Login />,
+            },
+            {
+                path: "register",
+                element: <Register />,
+            },
+        ],
     },
     {
         path: "/app",

@@ -1,16 +1,10 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { isAuthenticated, logout } from "../actions/auth";
 import { useEffect, useState } from "react";
-import { Button } from "../components/ui/button";
 import { Spinner } from "../components/ui/spinner";
 
-export default function AppLayout() {
+export default function AuthLayout() {
     const [isAuth, setIsAuth] = useState<Boolean | null>(null);
-
-    const handleLogout = async () => {
-        await logout();
-        setIsAuth(false);
-    };
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -31,14 +25,13 @@ export default function AppLayout() {
         );
     }
 
-    if (!isAuth) {
-        return <Navigate to="/login" replace />;
+    if (isAuth) {
+        return <Navigate to="/app" replace />;
     }
 
     return (
         <>
             <Outlet />
-            <Button onClick={handleLogout}>Logout</Button>
         </>
     );
 }
