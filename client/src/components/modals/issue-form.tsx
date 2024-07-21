@@ -15,6 +15,8 @@ import {
 import { Button } from "../ui/button";
 import { putIssue } from "src/actions/issues";
 import { useRefresh } from "src/context/refresh";
+import { getResolvers } from "src/actions/resolvers";
+import { ApiResponse, Resolver } from "src/types";
 
 interface IssueFormValues {
     title: string;
@@ -40,6 +42,8 @@ export function IssueForm() {
     const [values, setValues] = useState<IssueFormValues>(defaultValues);
     const [isLoading, setIsLoading] = useState(false);
 
+    const [resolvers, setResolvers] = useState<Resolver[] | undefined>();
+
     if (!addIssueModal.isOpen) {
         // eslint-disable-next-line no-restricted-globals
         history.pushState(null, "", window.location.pathname);
@@ -50,6 +54,19 @@ export function IssueForm() {
             setValues(defaultValues);
         }
     }, [id]);
+
+    useEffect(() => {
+        resolverOptions();
+    }, []);
+
+    const resolverOptions = async () => {
+        try {
+            const reponse: ApiResponse = await getResolvers();
+            setResolvers(reponse.data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     const handleChange = (field: keyof IssueFormValues, value: string) => {
         setValues((prevValues) => ({
@@ -162,16 +179,43 @@ export function IssueForm() {
                     </div>
                     <div className="grid gap-2">
                         <Label htmlFor="assignee">Assignee</Label>
-                        <Input
-                            type="text"
-                            id="assignee"
-                            placeholder="Assign to resolver"
-                            value={values.assignee}
-                            onChange={(e) =>
-                                handleChange("assignee", e.target.value)
-                            }
-                        />
+                        {resolvers && resolvers.length > 0 ? (
+                            <Select
+                                value={values.assignee}
+                                onValueChange={(newValue) =>
+                                    handleChange("assignee", newValue)
+                                }
+                            >
+                                <SelectTrigger>
+                                    <SelectValue>
+                                        {values.assignee || "Select resolver"}
+                                    </SelectValue>
+                                </SelectTrigger>
+
+                                <SelectContent>
+                                    {resolvers.map((resolver) => (
+                                        <SelectItem
+                                            key={resolver.name}
+                                            value={resolver.name}
+                                        >
+                                            {resolver.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        ) : (
+                            <Input
+                                type="text"
+                                id="assignee"
+                                placeholder="Assign to resolver"
+                                value={values.assignee}
+                                onChange={(e) =>
+                                    handleChange("assignee", e.target.value)
+                                }
+                            />
+                        )}
                     </div>
+
                     <Button type="submit" disabled={isLoading}>
                         {id ? "Save changes" : "Create issue"}
                     </Button>
