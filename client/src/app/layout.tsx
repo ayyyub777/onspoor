@@ -1,11 +1,13 @@
-import { Navigate, Outlet } from "react-router-dom";
-import { isAuthenticated, logout } from "../actions/auth";
 import { useEffect, useState } from "react";
-import { Button } from "../components/ui/button";
+import { Navigate, Outlet } from "react-router-dom";
+import { User } from "@/types";
+import { getUser, isAuthenticated, logout } from "../actions/auth";
 import { Spinner } from "../components/ui/spinner";
+import Navbar from "../components/ui/navbar";
 
 export default function AppLayout() {
     const [isAuth, setIsAuth] = useState<Boolean | null>(null);
+    const [user, setUser] = useState<User | null>(null);
 
     const handleLogout = async () => {
         await logout();
@@ -22,7 +24,17 @@ export default function AppLayout() {
             }
         };
 
+        const checkUser = async () => {
+            const result = await getUser();
+            if (result) {
+                setUser(result);
+            } else {
+                setUser(null);
+            }
+        };
+
         checkAuth();
+        checkUser();
     }, []);
 
     if (isAuth === null) {
@@ -37,8 +49,8 @@ export default function AppLayout() {
 
     return (
         <>
+            <Navbar user={user} />
             <Outlet />
-            <Button onClick={handleLogout}>Logout</Button>
         </>
     );
 }

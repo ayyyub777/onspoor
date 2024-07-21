@@ -9,6 +9,15 @@ export async function isAuthenticated() {
     }
 }
 
+export async function getUser() {
+    try {
+        const response = await axios.get("/api/user");
+        return response.data;
+    } catch (error) {
+        return null;
+    }
+}
+
 export async function login(email: string, password: string) {
     await axios.get("/sanctum/csrf-cookie");
     await axios.post("/login", {
