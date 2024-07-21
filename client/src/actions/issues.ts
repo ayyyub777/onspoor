@@ -1,14 +1,14 @@
 import axios from "axios";
 import { Issue } from "../schemas/issue";
 
-interface Response {
+export interface Response {
     status: string;
     message: string;
     data?: Issue[] | Issue;
     error?: string;
 }
 
-interface Values {
+export interface Values {
     title: string;
     status: string;
     priority: string;
