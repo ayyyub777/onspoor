@@ -9,6 +9,7 @@ import Register from "./auth/register";
 import Issues from "./app/issues";
 import AppLayout from "./app/layout";
 import AuthLayout from "./auth/layout";
+import Resolvers from "./app/resolvers";
 
 const router = createBrowserRouter([
     {
@@ -31,12 +32,16 @@ const router = createBrowserRouter([
         ],
     },
     {
-        path: "/app",
+        path: "/",
         element: <AppLayout />,
         children: [
             {
-                index: true,
+                path: "issues",
                 element: <Issues />,
+            },
+            {
+                path: "resolvers",
+                element: <Resolvers />,
             },
         ],
     },

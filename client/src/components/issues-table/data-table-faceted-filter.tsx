@@ -5,8 +5,8 @@ import { CheckIcon } from "@radix-ui/react-icons";
 import { Column } from "@tanstack/react-table";
 
 import { cn } from "src/lib/utils";
-import { Badge } from "./ui/badge";
-import { Button } from "./ui/button";
+import { Badge } from "src/components/ui/badge";
+import { Button } from "src/components/ui/button";
 import {
     Command,
     CommandEmpty,
@@ -15,9 +15,13 @@ import {
     CommandItem,
     CommandList,
     CommandSeparator,
-} from "./ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { Separator } from "./ui/separator";
+} from "src/components/ui/command";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "src/components/ui/popover";
+import { Separator } from "src/components/ui/separator";
 
 interface DataTableFacetedFilterProps<TData, TValue> {
     column?: Column<TData, TValue>;

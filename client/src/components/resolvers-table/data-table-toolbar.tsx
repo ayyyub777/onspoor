@@ -3,13 +3,13 @@
 import { Cross2Icon } from "@radix-ui/react-icons";
 import { Table } from "@tanstack/react-table";
 
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
+import { Button } from "src/components/ui/button";
+import { Input } from "src/components/ui/input";
 import { DataTableViewOptions } from "./data-table-view-options";
 
-import { priorities, statuses } from "../data/data";
+import { priorities, statuses } from "src/data/data";
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
-import { Badge } from "./ui/badge";
+import { Badge } from "src/components/ui/badge";
 
 interface DataTableToolbarProps<TData> {
     table: Table<TData>;
@@ -23,8 +23,10 @@ export function DataTableToolbar<TData>({
     return (
         <div className="flex flex-col gap-4 md:gap-2 md:flex-row md:items-center md:justify-between">
             <h1 className="text-xl leading-tight flex justify-between md:justify-normal items-center gap-4">
-                <span>Issue tracking</span>
-                <Badge variant="secondary">{table.getRowCount()} Issues</Badge>
+                <span>Resolvers</span>
+                <Badge variant="secondary">
+                    {table.getRowCount()} Resolvers
+                </Badge>
             </h1>
             <div className="flex items-center space-x-2">
                 {isFiltered && (
@@ -33,38 +35,23 @@ export function DataTableToolbar<TData>({
                         onClick={() => table.resetColumnFilters()}
                         className="h-8"
                     >
-                        <Cross2Icon className="h-4 w-4" />
+                        <Cross2Icon className="mr-1 h-4 w-4" />
                         Reset
                     </Button>
                 )}
                 <Input
-                    placeholder="Filter issues..."
+                    placeholder="Filter resolvers..."
                     value={
-                        (table
-                            .getColumn("title")
-                            ?.getFilterValue() as string) ?? ""
+                        (table.getColumn("name")?.getFilterValue() as string) ??
+                        ""
                     }
                     onChange={(event) =>
                         table
-                            .getColumn("title")
+                            .getColumn("name")
                             ?.setFilterValue(event.target.value)
                     }
                     className="w-full h-8 md:w-[150px] lg:w-[250px]"
                 />
-                {table.getColumn("status") && (
-                    <DataTableFacetedFilter
-                        column={table.getColumn("status")}
-                        title="Status"
-                        options={statuses}
-                    />
-                )}
-                {table.getColumn("priority") && (
-                    <DataTableFacetedFilter
-                        column={table.getColumn("priority")}
-                        title="Priority"
-                        options={priorities}
-                    />
-                )}
                 <DataTableViewOptions table={table} />
             </div>
         </div>

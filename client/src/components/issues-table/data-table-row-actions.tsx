@@ -3,16 +3,16 @@
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { Row } from "@tanstack/react-table";
 
-import { Button } from "./ui/button";
+import { Button } from "src/components/ui/button";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
+} from "src/components/ui/dropdown-menu";
 
-import { issueSchema } from "../data/schema";
+import { issueSchema } from "src/data/schema";
 import { useDeleteIssueModal } from "src/hooks/use-delete-issue-modal";
 import { useIssueFormModal } from "src/hooks/use-issue-form-modal";
 

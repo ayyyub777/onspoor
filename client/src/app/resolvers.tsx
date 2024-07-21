@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
-import { useRefresh } from "../context/refresh";
-import { getIssues } from "../actions/issues";
-import { DataTable } from "../components/issues-table/data-table";
-import { columns } from "../components/issues-table/columns";
+import { useRefresh } from "src/context/refresh";
+import { getResolvers } from "src/actions/resolvers";
+import { DataTable } from "src/components/resolvers-table/data-table";
+import { columns } from "src/components/resolvers-table/columns";
 import { ApiResponse } from "src/types";
 
-export default function Issues() {
+export default function Resolvers() {
     const [response, setResponse] = useState<ApiResponse>();
     const { refresh } = useRefresh();
 
     useEffect(() => {
-        getIssues().then((data) => setResponse(data));
+        getResolvers().then((data) => setResponse(data));
     }, [refresh]);
 
     return (

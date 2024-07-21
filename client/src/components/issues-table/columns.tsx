@@ -2,8 +2,8 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 
-import { priorities, statuses } from "../data/data";
-import { Issue } from "@/schemas/issue";
+import { priorities, statuses } from "src/data/data";
+import { Issue } from "src/schemas/issue";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { DataTableRowActions } from "./data-table-row-actions";
 

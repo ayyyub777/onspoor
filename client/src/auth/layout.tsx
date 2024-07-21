@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { isAuthenticated, logout } from "../actions/auth";
+import { isAuthenticated } from "../actions/auth";
 import { useEffect, useState } from "react";
 import { Spinner } from "../components/ui/spinner";
 
@@ -26,7 +26,7 @@ export default function AuthLayout() {
     }
 
     if (isAuth) {
-        return <Navigate to="/app" replace />;
+        return <Navigate to="/issues" replace />;
     }
 
     return (

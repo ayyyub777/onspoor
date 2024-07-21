@@ -42,7 +42,7 @@ export default function Login() {
         setProcessing(true);
         try {
             await login(values.email, values.password);
-            navigate("/app");
+            navigate("/issues");
         } catch (error: any) {
             setErrors({
                 email: error.response?.data?.errors?.email || null,

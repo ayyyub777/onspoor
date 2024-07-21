@@ -2,7 +2,9 @@
 
 import { useMounted } from "src/hooks/use-mounted";
 import { IssueForm } from "./modals/issue-form";
-import { DeleteIssue } from "./modals/delete.issue";
+import { DeleteIssue } from "./modals/delete-issue";
+import { ResolverForm } from "./modals/resolver-form";
+import { DeleteResolver } from "./modals/delete-resolver";
 
 export const ModalProvider = () => {
     const mounted = useMounted();
@@ -15,6 +17,8 @@ export const ModalProvider = () => {
         <>
             <IssueForm />
             <DeleteIssue />
+            <ResolverForm />
+            <DeleteResolver />
         </>
     );
 };

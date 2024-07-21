@@ -9,7 +9,7 @@ class Resolver extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'email'];
+    protected $fillable = ['name', 'email', 'user_id'];
 
     public function User()
     {

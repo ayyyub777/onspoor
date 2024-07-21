@@ -4,13 +4,13 @@ import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { MixerHorizontalIcon, PlusIcon } from "@radix-ui/react-icons";
 import { Table } from "@tanstack/react-table";
 
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
     DropdownMenuContent,
-} from "./ui/dropdown-menu";
-import { useIssueFormModal } from "src/hooks/use-issue-form-modal";
+} from "../ui/dropdown-menu";
+import { useResolverFormModal } from "src/hooks/use-resolver-form-modal";
 
 interface DataTableViewOptionsProps<TData> {
     table: Table<TData>;
@@ -19,19 +19,19 @@ interface DataTableViewOptionsProps<TData> {
 export function DataTableViewOptions<TData>({
     table,
 }: DataTableViewOptionsProps<TData>) {
-    const issueFormModal = useIssueFormModal();
+    const resolverFormModal = useResolverFormModal();
     return (
         <>
             <Button
                 className="hidden md:flex h-8"
-                onClick={issueFormModal.onOpen}
+                onClick={resolverFormModal.onOpen}
             >
                 <PlusIcon className="mr-2 h-4 w-4" />
-                Submit issue
+                Add resolver
             </Button>
             <div
                 className="md:hidden absolute bottom-7 right-7 z-50"
-                onClick={issueFormModal.onOpen}
+                onClick={resolverFormModal.onOpen}
             >
                 <div className="bg-primary text-primary-foreground h-12 w-12 flex justify-center items-center rounded-full shadow">
                     <PlusIcon className="h-6 w-6" />

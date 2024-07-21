@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { User } from "@/types";
-import { getUser, isAuthenticated, logout } from "../actions/auth";
-import { Spinner } from "../components/ui/spinner";
-import Navbar from "../components/ui/navbar";
-import { ModalProvider } from "../components/modal-provider";
-import { RefreshProvider } from "../context/refresh";
+import { getUser, isAuthenticated } from "src/actions/auth";
+import { Spinner } from "src/components/ui/spinner";
+import Navbar from "src/components/navbar";
+import { ModalProvider } from "src/components/modal-provider";
+import { RefreshProvider } from "src/context/refresh";
 
 export default function AppLayout() {
     const [isAuth, setIsAuth] = useState<Boolean | null>(null);

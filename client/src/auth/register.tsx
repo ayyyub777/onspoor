@@ -50,7 +50,7 @@ export default function Register() {
                 values.password,
                 values.password_confirmation
             );
-            navigate("/app");
+            navigate("/issues");
         } catch (error: any) {
             setErrors({
                 name: error.response?.data?.errors?.name || null,
