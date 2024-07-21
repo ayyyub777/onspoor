@@ -2,30 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\Priority;
-use App\Enums\Status;
 use App\Models\Issue;
+use App\Traits\ApiResponses;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
-use PhpParser\Node\Stmt\TryCatch;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Validation\ValidationException;
 
 class IssueController extends Controller
 {
+    use ApiResponses;
+
     public function index(Request $request)
     {
         $user = $request->user();
         try {
             $issues = Issue::with('user')->where('user_id', $user->id)->get();
-            return response()->json([
-                'status' => 'success',
-                'data' => $issues,
-            ]);
+            return $this->successResponse($issues, 'Issues retrieved successfully');
+        } catch (ValidationException $e) {
+            return $this->validationErrorResponse($e);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Error fetching issues',
-                'error' => $e->getMessage()
-            ], 500);
+            return $this->errorResponse('Error retrieving issues: ' . $e->getMessage(), 500);
         }
     }
 
@@ -33,17 +29,14 @@ class IssueController extends Controller
     {
         $user = $request->user();
         try {
-            $issue = Issue::find($id)::with('user')->where('user_id', $user->id)->get();
-            return response()->json([
-                'status' => 'success',
-                'data' => $issue,
-            ]);
+            $issue = Issue::with('user')->where('id', $id)->where('user_id', $user->id)->firstOrFail();
+            return $this->successResponse($issue, 'Issue retrieved successfully');
+        } catch (ModelNotFoundException $e) {
+            return $this->errorResponse('Issue not found', 404);
+        } catch (ValidationException $e) {
+            return $this->validationErrorResponse($e);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Error fetching issue',
-                'error' => $e->getMessage()
-            ], 500);
+            return $this->errorResponse('Error retrieving issue: ' . $e->getMessage(), 500);
         }
     }
 
@@ -65,16 +58,11 @@ class IssueController extends Controller
                 'assignee' => $validatedData['assignee'],
                 'user_id' => $user->id,
             ]);
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Issue created successfully'
-            ]);
+            return $this->successResponse($issue, 'Issue created successfully');
+        } catch (ValidationException $e) {
+            return $this->validationErrorResponse($e);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Error creating issue',
-                'error' => $e->getMessage()
-            ], 500);
+            return $this->errorResponse('Error creating issue: ' . $e->getMessage(), 500);
         }
     }
 
@@ -89,16 +77,13 @@ class IssueController extends Controller
                 'priority' => 'required',
                 'assignee' => 'required',
             ]));
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Issue updated successfully'
-            ]);
+            return $this->successResponse($issue, 'Issue updated successfully');
+        } catch (ModelNotFoundException $e) {
+            return $this->errorResponse('Issue not found', 404);
+        } catch (ValidationException $e) {
+            return $this->validationErrorResponse($e);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Error updating issue',
-                'error' => $e->getMessage()
-            ], 500);
+            return $this->errorResponse('Error updating issue: ' . $e->getMessage(), 500);
         }
     }
 
@@ -106,18 +91,13 @@ class IssueController extends Controller
     {
         $user = $request->user();
         try {
-            $issue = Issue::find($id)::with('user')->where('user_id', $user->id)->get();
+            $issue = Issue::with('user')->where('id', $id)->where('user_id', $user->id)->firstOrFail();
             $issue->delete();
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Issue deleted successfully'
-            ]);
+            return $this->successResponse(null, 'Issue deleted successfully');
+        } catch (ModelNotFoundException $e) {
+            return $this->errorResponse('Issue not found', 404);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Error deleting issue',
-                'error' => $e->getMessage()
-            ], 500);
+            return $this->errorResponse('Error deleting issue: ' . $e->getMessage(), 500);
         }
     }
 }

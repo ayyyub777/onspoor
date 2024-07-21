@@ -1,12 +1,5 @@
 import axios from "axios";
-import { Issue } from "../schemas/issue";
-
-export interface Response {
-    status: string;
-    message: string;
-    data?: Issue[] | Issue;
-    error?: string;
-}
+import { ApiResponse } from "src/types";
 
 export interface Values {
     title: string;
@@ -16,7 +9,7 @@ export interface Values {
 }
 
 export const getIssues = async () => {
-    const response: Response = await axios
+    const response: ApiResponse = await axios
         .get("/api/issues")
         .then((res) => res.data);
 
@@ -30,7 +23,7 @@ export const getIssues = async () => {
 };
 
 export const getIssue = async (id: string) => {
-    const response: Response = await axios
+    const response: ApiResponse = await axios
         .get("/api/issues/" + id)
         .then((res) => res.data);
 

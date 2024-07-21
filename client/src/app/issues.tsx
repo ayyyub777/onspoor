@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { useRefresh } from "../context/refresh";
-import { getIssues, Response } from "../actions/issues";
+import { getIssues } from "../actions/issues";
 import { DataTable } from "../components/data-table";
 import { columns } from "../components/columns";
+import { ApiResponse } from "src/types";
 
 export default function Issues() {
-    const [response, setResponse] = useState<Response>();
+    const [response, setResponse] = useState<ApiResponse>();
     const { refresh } = useRefresh();
 
     useEffect(() => {
@@ -20,7 +21,7 @@ export default function Issues() {
                 Array.isArray(response.data) ? (
                     <DataTable columns={columns} data={response.data} />
                 ) : response?.status === "error" ? (
-                    <div className="text-center">{response.error}</div>
+                    <div className="text-center">{response.message}</div>
                 ) : (
                     <div className="text-center">Loading...</div>
                 )}

@@ -1,3 +1,10 @@
+export interface ApiResponse<T = any> {
+    status: "success" | "error";
+    message: string | null;
+    data?: T;
+    errors?: Record<string, string[]>;
+}
+
 export interface User {
     id: number;
     name: string;
