@@ -11,7 +11,7 @@ class Issue extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'status', 'priority', 'assignee', "user_id"];
+    protected $fillable = ['title', 'status', 'priority', 'assignee', 'user_id'];
 
     protected $casts = [
         'status' => Status::class,

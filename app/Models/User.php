@@ -49,4 +49,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Issue::class);
     }
+
+    public function resolvers()
+    {
+        return $this->hasMany(Resolver::class);
+    }
 }
