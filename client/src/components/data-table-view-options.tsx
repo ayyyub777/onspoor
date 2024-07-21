@@ -1,4 +1,4 @@
-"use client";
+// @ts-ignore
 
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { MixerHorizontalIcon, PlusIcon } from "@radix-ui/react-icons";

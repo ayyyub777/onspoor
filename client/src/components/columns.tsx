@@ -1,4 +1,4 @@
-"use client";
+// @ts-ignore
 
 import { ColumnDef } from "@tanstack/react-table";
 

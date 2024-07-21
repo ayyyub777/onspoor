@@ -9,12 +9,15 @@ import {
     DialogTitle,
 } from "../ui/dialog";
 import { Button } from "../ui/button";
+import { useRefresh } from "src/context/refresh";
 
 export function DeleteIssue() {
+    const { triggerRefresh } = useRefresh();
     const deleteIssueModal = useDeleteIssueModal();
     let params = new URLSearchParams(window.location.search);
 
     if (!deleteIssueModal.isOpen) {
+        // eslint-disable-next-line no-restricted-globals
         history.pushState(null, "", window.location.pathname);
     }
 
@@ -24,9 +27,11 @@ export function DeleteIssue() {
             if (id) {
                 await deleteIssue(id);
             }
+            triggerRefresh();
         } catch (error) {
             console.error(error);
         } finally {
+            // eslint-disable-next-line no-restricted-globals
             history.pushState(null, "", window.location.pathname);
             deleteIssueModal.onClose();
         }

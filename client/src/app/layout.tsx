@@ -5,15 +5,11 @@ import { getUser, isAuthenticated, logout } from "../actions/auth";
 import { Spinner } from "../components/ui/spinner";
 import Navbar from "../components/ui/navbar";
 import { ModalProvider } from "../components/modal-provider";
+import { RefreshProvider } from "../context/refresh";
 
 export default function AppLayout() {
     const [isAuth, setIsAuth] = useState<Boolean | null>(null);
     const [user, setUser] = useState<User | null>(null);
-
-    const handleLogout = async () => {
-        await logout();
-        setIsAuth(false);
-    };
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -50,9 +46,11 @@ export default function AppLayout() {
 
     return (
         <>
-            <ModalProvider />
             <Navbar user={user} />
-            <Outlet />
+            <RefreshProvider>
+                <ModalProvider />
+                <Outlet />
+            </RefreshProvider>
         </>
     );
 }

@@ -1,4 +1,4 @@
-"use client";
+// @ts-ignore
 
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { Row } from "@tanstack/react-table";
@@ -36,6 +36,7 @@ export function DataTableRowActions<TData>({
         params.set("assignee", row.getValue("assignee"));
 
         let newUrl = window.location.pathname + "?" + params.toString();
+        // eslint-disable-next-line no-restricted-globals
         history.pushState(null, "", newUrl);
 
         issueFormModal.onOpen();
@@ -47,6 +48,7 @@ export function DataTableRowActions<TData>({
         params.set("title", row.getValue("title"));
 
         let newUrl = window.location.pathname + "?" + params.toString();
+        // eslint-disable-next-line no-restricted-globals
         history.pushState(null, "", newUrl);
 
         deleteIssueModal.onOpen();

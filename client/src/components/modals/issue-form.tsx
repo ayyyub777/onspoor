@@ -14,6 +14,7 @@ import {
 } from "../ui/select";
 import { Button } from "../ui/button";
 import { putIssue } from "src/actions/issues";
+import { useRefresh } from "src/context/refresh";
 
 interface IssueFormValues {
     title: string;
@@ -23,6 +24,7 @@ interface IssueFormValues {
 }
 
 export function IssueForm() {
+    const { triggerRefresh } = useRefresh();
     const addIssueModal = useIssueFormModal();
 
     const params = new URLSearchParams(window.location.search);
@@ -37,6 +39,11 @@ export function IssueForm() {
 
     const [values, setValues] = useState<IssueFormValues>(defaultValues);
     const [isLoading, setIsLoading] = useState(false);
+
+    if (!addIssueModal.isOpen) {
+        // eslint-disable-next-line no-restricted-globals
+        history.pushState(null, "", window.location.pathname);
+    }
 
     useEffect(() => {
         if (id) {
@@ -60,11 +67,14 @@ export function IssueForm() {
             } else {
                 await postIssue(values);
             }
-            addIssueModal.onClose();
+            triggerRefresh();
             setValues(defaultValues);
+            addIssueModal.onClose();
         } catch (error) {
             console.error("Error submitting form:", error);
         } finally {
+            // eslint-disable-next-line no-restricted-globals
+            history.pushState(null, "", window.location.pathname);
             setIsLoading(false);
         }
     };
