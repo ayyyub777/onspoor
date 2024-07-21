@@ -7,7 +7,7 @@ export default function Navbar({ user }: { user: User | null }) {
         <nav>
             <div className="flex justify-between items-center px-8 pt-4 pb-3 bg-background">
                 <h1 className="text-[21px] font-semibold text-primary">
-                    On<span className="font-extralight">Spoor</span>
+                    On<span className="font-light">Spoor</span>
                 </h1>
                 {user && <UserNav user={user} />}
             </div>
