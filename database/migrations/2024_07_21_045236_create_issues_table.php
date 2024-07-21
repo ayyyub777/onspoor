@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('status')->default(App\Enums\Status::BACKLOG->value);
             $table->string('priority')->default(App\Enums\Priority::MEDIUM->value);
             $table->string('assignee');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

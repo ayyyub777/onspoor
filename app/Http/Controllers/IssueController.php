@@ -11,10 +11,11 @@ use PhpParser\Node\Stmt\TryCatch;
 
 class IssueController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $user = $request->user();
         try {
-            $issues = Issue::all();
+            $issues = Issue::with('user')->where('user_id', $user->id)->get();
             return response()->json([
                 'status' => 'success',
                 'data' => $issues,
@@ -28,10 +29,11 @@ class IssueController extends Controller
         }
     }
 
-    public function view($id)
+    public function view(Request $request, $id)
     {
+        $user = $request->user();
         try {
-            $issue = Issue::find($id);
+            $issue = Issue::find($id)::with('user')->where('user_id', $user->id)->get();
             return response()->json([
                 'status' => 'success',
                 'data' => $issue,
@@ -47,13 +49,22 @@ class IssueController extends Controller
 
     public function store(Request $request)
     {
+        $user = $request->user();
         try {
-            Issue::create($request->validate([
+            $validatedData = $request->validate([
                 'title' => 'required',
                 'status' => 'required',
                 'priority' => 'required',
                 'assignee' => 'required',
-            ]));
+            ]);
+
+            $issue = Issue::create([
+                'title' => $validatedData['title'],
+                'status' => $validatedData['status'],
+                'priority' => $validatedData['priority'],
+                'assignee' => $validatedData['assignee'],
+                'user_id' => $user->id,
+            ]);
             return response()->json([
                 'status' => 'success',
                 'message' => 'Issue created successfully'
@@ -69,8 +80,9 @@ class IssueController extends Controller
 
     public function update(Request $request, $id)
     {
+        $user = $request->user();
         try {
-            $issue = Issue::find($id);
+            $issue = Issue::with('user')->where('id', $id)->where('user_id', $user->id)->firstOrFail();
             $issue->update($request->validate([
                 'title' => 'required',
                 'status' => 'required',
@@ -90,10 +102,11 @@ class IssueController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
+        $user = $request->user();
         try {
-            $issue = Issue::find($id);
+            $issue = Issue::find($id)::with('user')->where('user_id', $user->id)->get();
             $issue->delete();
             return response()->json([
                 'status' => 'success',
