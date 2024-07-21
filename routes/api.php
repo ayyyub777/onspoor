@@ -18,9 +18,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('/resolver', [ResolverController::class, 'index']);
-    Route::get('/resolver/{id}', [ResolverController::class, 'view']);
-    Route::post('/resolver', [ResolverController::class, 'store']);
-    Route::put('/resolver/{id}', [ResolverController::class, 'update']);
-    Route::delete('/resolver/{id}', [ResolverController::class, 'destroy']);
+    Route::get('/resolvers', [ResolverController::class, 'index']);
+    Route::get('/resolvers/{id}', [ResolverController::class, 'view']);
+    Route::post('/resolvers', [ResolverController::class, 'store']);
+    Route::put('/resolvers/{id}', [ResolverController::class, 'update']);
+    Route::delete('/resolvers/{id}', [ResolverController::class, 'destroy']);
 });
