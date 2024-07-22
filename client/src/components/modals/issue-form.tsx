@@ -17,6 +17,7 @@ import { putIssue } from "src/actions/issues";
 import { useRefresh } from "src/context/refresh";
 import { getResolvers } from "src/actions/resolvers";
 import { ApiResponse, Resolver } from "src/types";
+import { set } from "zod";
 
 interface IssueFormValues {
     title: string;
@@ -48,6 +49,10 @@ export function IssueForm() {
         // eslint-disable-next-line no-restricted-globals
         history.pushState(null, "", window.location.pathname);
     }
+
+    useEffect(() => {
+        setValues(defaultValues);
+    }, [addIssueModal]);
 
     useEffect(() => {
         if (id) {

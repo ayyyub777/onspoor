@@ -33,6 +33,10 @@ export function ResolverForm() {
     }
 
     useEffect(() => {
+        setValues(defaultValues);
+    }, [addIssueModal]);
+
+    useEffect(() => {
         if (id) {
             setValues(defaultValues);
         }
