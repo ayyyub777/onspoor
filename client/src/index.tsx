@@ -1,9 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+    createBrowserRouter,
+    Navigate,
+    RouterProvider,
+} from "react-router-dom";
 import axios from "axios";
 import "./index.css";
-import App from "./app";
 import Login from "./auth/login";
 import Register from "./auth/register";
 import Issues from "./app/issues";
@@ -15,7 +18,7 @@ import Reports from "./app/reports";
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <App />,
+        element: <Navigate to="/login" replace />,
     },
     {
         path: "/",
