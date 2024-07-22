@@ -58,3 +58,11 @@ export const deleteIssue = async (id: string) => {
         url: "/api/issues/" + id,
     });
 };
+
+export const getIssuesByDate = async () => {
+    const response: ApiResponse = await axios
+        .get("/api/issues-by-date")
+        .then((res) => res.data);
+
+    return response;
+};

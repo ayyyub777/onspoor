@@ -10,6 +10,7 @@ import Issues from "./app/issues";
 import AppLayout from "./app/layout";
 import AuthLayout from "./auth/layout";
 import Resolvers from "./app/resolvers";
+import Reports from "./app/reports";
 
 const router = createBrowserRouter([
     {
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
             {
                 path: "resolvers",
                 element: <Resolvers />,
+            },
+            {
+                path: "reports",
+                element: <Reports />,
             },
         ],
     },

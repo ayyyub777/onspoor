@@ -16,6 +16,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::put('/issues/{id}', [IssueController::class, 'update']);
     Route::delete('/issues/{id}', [IssueController::class, 'destroy']);
 });
+Route::get('/issues-by-date', [IssueController::class, 'getIssuesByDate']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/resolvers', [ResolverController::class, 'index']);

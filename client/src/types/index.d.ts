@@ -21,3 +21,21 @@ export interface Resolver {
     created_at: string;
     updated_at: string;
 }
+
+export interface IssuesByDate {
+    date: string;
+    counts: {
+        status: {
+            backlog: number;
+            todo: number;
+            "in progress": number;
+            done: number;
+            canceled: number;
+        };
+        priority: {
+            low: number;
+            medium: number;
+            high: number;
+        };
+    };
+}
