@@ -64,6 +64,6 @@ root.render(
     </React.StrictMode>
 );
 
-axios.defaults.baseURL = "http://localhost:8000";
+axios.defaults.baseURL = "http://localhost";
 axios.defaults.withCredentials = true;
 axios.defaults.withXSRFToken = true;
