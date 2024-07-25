@@ -2,7 +2,7 @@ services:
   api:
     build:
       context: .
-      dockerfile: Dockerfile.api
+      dockerfile: Dockerfile
     container_name: api
     restart: unless-stopped
     volumes:
@@ -13,7 +13,7 @@ services:
   client:
     build:
       context: ./client
-      dockerfile: Dockerfile.client
+      dockerfile: Dockerfile
     container_name: client
     ports:
       - 3000:3000
