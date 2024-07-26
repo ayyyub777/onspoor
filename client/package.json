@@ -5,10 +5,10 @@
     "dependencies": {
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
-        "react-router-dom": "^6.25.1"
+        "react-router-dom": "^6.25.1",
+        "react-scripts": "5.0.1"
     },
     "devDependencies": {
-        "react-scripts": "5.0.1",
         "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
         "@radix-ui/react-avatar": "^1.1.0",
         "@radix-ui/react-dialog": "^1.1.1",
