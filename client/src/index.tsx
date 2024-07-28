@@ -65,6 +65,6 @@ root.render(
 );
 
 axios.defaults.baseURL =
-    process.env.REACT_APP_API_BASE_URL || "http://localhost";
+    process.env.REACT_APP_API_BASE_URL || "http://localhost:8000";
 axios.defaults.withCredentials = true;
 axios.defaults.withXSRFToken = true;

@@ -1,13 +1,18 @@
 import { z } from "zod";
 
 export const issueSchema = z.object({
-    id: z.number(),
-    title: z.string(),
-    status: z.string(),
-    priority: z.string(),
-    assignee: z.string(),
-    created_at: z.string(),
-    updated_at: z.string(),
+    title: z.string().min(1, "Title is required"),
+    status: z.string().min(1, "Status is required"),
+    priority: z.string().min(1, "Priority is required"),
+    assignee: z.string().min(1, "Assignee is required"),
 });
 
-export type Issue = z.infer<typeof issueSchema>;
+export type Issue = {
+    id: number;
+    title: string;
+    status: string;
+    priority: string;
+    assignee: string;
+    created_at: string;
+    updated_at: string;
+};

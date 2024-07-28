@@ -1,7 +1,9 @@
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useIssueFormModal } from "src/hooks/use-issue-form-modal";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { useEffect, useState } from "react";
-import { postIssue } from "src/actions/issues";
+import { postIssue, putIssue } from "src/actions/issues";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { priorities, statuses } from "src/data/data";
@@ -13,52 +15,65 @@ import {
     SelectValue,
 } from "../ui/select";
 import { Button } from "../ui/button";
-import { putIssue } from "src/actions/issues";
 import { useRefresh } from "src/context/refresh";
 import { getResolvers } from "src/actions/resolvers";
 import { ApiResponse, Resolver } from "src/types";
-import { set } from "zod";
+import { z } from "zod";
+import { InputError } from "../ui/input-error";
+import { issueSchema } from "src/schemas/issue";
 
-interface IssueFormValues {
-    title: string;
-    status: string;
-    priority: string;
-    assignee: string;
-}
+type IssueFormValues = z.infer<typeof issueSchema>;
 
 export function IssueForm() {
     const { triggerRefresh } = useRefresh();
     const addIssueModal = useIssueFormModal();
 
-    const params = new URLSearchParams(window.location.search);
-    const id = params.get("id");
-
-    const defaultValues: IssueFormValues = {
-        title: params.get("title") || "",
-        status: params.get("status") || "backlog",
-        priority: params.get("priority") || "low",
-        assignee: params.get("assignee") || "",
-    };
-
-    const [values, setValues] = useState<IssueFormValues>(defaultValues);
     const [isLoading, setIsLoading] = useState(false);
-
     const [resolvers, setResolvers] = useState<Resolver[] | undefined>();
 
-    if (!addIssueModal.isOpen) {
-        // eslint-disable-next-line no-restricted-globals
-        history.pushState(null, "", window.location.pathname);
-    }
+    const {
+        control,
+        register,
+        handleSubmit,
+        formState: { errors },
+        reset,
+    } = useForm<IssueFormValues>({
+        resolver: zodResolver(issueSchema),
+        defaultValues: {
+            title: "",
+            status: "backlog",
+            priority: "low",
+            assignee: "",
+        },
+    });
 
     useEffect(() => {
-        setValues(defaultValues);
-    }, [addIssueModal]);
-
-    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get("id");
         if (id) {
-            setValues(defaultValues);
+            const defaultValues: IssueFormValues = {
+                title: params.get("title") || "",
+                status: params.get("status") || "backlog",
+                priority: params.get("priority") || "low",
+                assignee: params.get("assignee") || "",
+            };
+            reset(defaultValues);
+        } else {
+            reset({
+                title: "",
+                status: "backlog",
+                priority: "low",
+                assignee: "",
+            });
         }
-    }, [id]);
+    }, [reset, addIssueModal.isOpen]);
+
+    useEffect(() => {
+        if (!addIssueModal.isOpen) {
+            // eslint-disable-next-line no-restricted-globals
+            history.pushState(null, "", window.location.pathname);
+        }
+    }, [addIssueModal.isOpen]);
 
     useEffect(() => {
         resolverOptions();
@@ -66,31 +81,25 @@ export function IssueForm() {
 
     const resolverOptions = async () => {
         try {
-            const reponse: ApiResponse = await getResolvers();
-            setResolvers(reponse.data);
+            const response: ApiResponse = await getResolvers();
+            setResolvers(response.data);
         } catch (error) {
             console.error(error);
         }
     };
 
-    const handleChange = (field: keyof IssueFormValues, value: string) => {
-        setValues((prevValues) => ({
-            ...prevValues,
-            [field]: value,
-        }));
-    };
-
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    const onSubmit = async (data: IssueFormValues) => {
         setIsLoading(true);
         try {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get("id");
             if (id) {
-                await putIssue({ id, values });
+                await putIssue({ id, values: data });
             } else {
-                await postIssue(values);
+                await postIssue(data);
             }
             triggerRefresh();
-            setValues(defaultValues);
+            reset();
             addIssueModal.onClose();
         } catch (error) {
             console.error("Error submitting form:", error);
@@ -108,11 +117,15 @@ export function IssueForm() {
         >
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>{id ? "Edit Issue" : "Add Issue"}</DialogTitle>
+                    <DialogTitle>
+                        {new URLSearchParams(window.location.search).get("id")
+                            ? "Edit Issue"
+                            : "Add Issue"}
+                    </DialogTitle>
                 </DialogHeader>
                 <form
                     className="grid items-start gap-4"
-                    onSubmit={handleSubmit}
+                    onSubmit={handleSubmit(onSubmit)}
                 >
                     <div className="grid gap-2">
                         <Label htmlFor="title">Title</Label>
@@ -120,109 +133,116 @@ export function IssueForm() {
                             type="text"
                             id="title"
                             placeholder="Describe issue"
-                            value={values.title}
-                            onChange={(e) =>
-                                handleChange("title", e.target.value)
-                            }
+                            {...register("title")}
                         />
+                        {errors.title && (
+                            <InputError message={errors.title.message} />
+                        )}
                     </div>
                     <div className="grid gap-2">
                         <Label htmlFor="status">Status</Label>
-                        <Select
-                            value={values.status}
-                            onValueChange={(newValue) =>
-                                handleChange("status", newValue)
-                            }
-                        >
-                            <SelectTrigger>
-                                <SelectValue>
-                                    {statuses.find(
-                                        (status) =>
-                                            status.value === values.status
-                                    )?.label || "Select status"}
-                                </SelectValue>
-                            </SelectTrigger>
-                            <SelectContent>
-                                {statuses.map((status) => (
-                                    <SelectItem
-                                        key={status.value}
-                                        value={status.value}
-                                    >
-                                        {status.label}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                        <Controller
+                            name="status"
+                            control={control}
+                            render={({ field }) => (
+                                <Select
+                                    onValueChange={field.onChange}
+                                    value={field.value}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select status" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {statuses.map((status) => (
+                                            <SelectItem
+                                                key={status.value}
+                                                value={status.value}
+                                            >
+                                                {status.label}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            )}
+                        />
+                        {errors.status && (
+                            <InputError message={errors.status.message} />
+                        )}
                     </div>
                     <div className="grid gap-2">
                         <Label htmlFor="priority">Priority</Label>
-                        <Select
-                            value={values.priority}
-                            onValueChange={(newValue) =>
-                                handleChange("priority", newValue)
-                            }
-                        >
-                            <SelectTrigger>
-                                <SelectValue>
-                                    {priorities.find(
-                                        (priority) =>
-                                            priority.value === values.priority
-                                    )?.label || "Select priority"}
-                                </SelectValue>
-                            </SelectTrigger>
-                            <SelectContent>
-                                {priorities.map((priority) => (
-                                    <SelectItem
-                                        key={priority.value}
-                                        value={priority.value}
-                                    >
-                                        {priority.label}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                        <Controller
+                            name="priority"
+                            control={control}
+                            render={({ field }) => (
+                                <Select
+                                    onValueChange={field.onChange}
+                                    value={field.value}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select priority" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {priorities.map((priority) => (
+                                            <SelectItem
+                                                key={priority.value}
+                                                value={priority.value}
+                                            >
+                                                {priority.label}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            )}
+                        />
+                        {errors.priority && (
+                            <InputError message={errors.priority.message} />
+                        )}
                     </div>
                     <div className="grid gap-2">
                         <Label htmlFor="assignee">Assignee</Label>
                         {resolvers && resolvers.length > 0 ? (
-                            <Select
-                                value={values.assignee}
-                                onValueChange={(newValue) =>
-                                    handleChange("assignee", newValue)
-                                }
-                            >
-                                <SelectTrigger>
-                                    <SelectValue>
-                                        {values.assignee || "Select resolver"}
-                                    </SelectValue>
-                                </SelectTrigger>
-
-                                <SelectContent>
-                                    {resolvers.map((resolver) => (
-                                        <SelectItem
-                                            key={resolver.name}
-                                            value={resolver.name}
-                                        >
-                                            {resolver.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                            <Controller
+                                name="assignee"
+                                control={control}
+                                render={({ field }) => (
+                                    <Select
+                                        onValueChange={field.onChange}
+                                        value={field.value}
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select resolver" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {resolvers.map((resolver) => (
+                                                <SelectItem
+                                                    key={resolver.name}
+                                                    value={resolver.name}
+                                                >
+                                                    {resolver.name}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                )}
+                            />
                         ) : (
                             <Input
                                 type="text"
                                 id="assignee"
                                 placeholder="Assign to resolver"
-                                value={values.assignee}
-                                onChange={(e) =>
-                                    handleChange("assignee", e.target.value)
-                                }
+                                {...register("assignee")}
                             />
+                        )}
+                        {errors.assignee && (
+                            <InputError message={errors.assignee.message} />
                         )}
                     </div>
 
                     <Button type="submit" disabled={isLoading}>
-                        {id ? "Save changes" : "Create issue"}
+                        {new URLSearchParams(window.location.search).get("id")
+                            ? "Save changes"
+                            : "Create issue"}
                     </Button>
                 </form>
             </DialogContent>

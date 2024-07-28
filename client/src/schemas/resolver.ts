@@ -1,11 +1,14 @@
 import { z } from "zod";
 
 export const resolverSchema = z.object({
-    id: z.number(),
-    name: z.string(),
-    email: z.string(),
-    created_at: z.string(),
-    updated_at: z.string(),
+    name: z.string().min(1, "Name is required"),
+    email: z.string().email("Invalid email address"),
 });
 
-export type Resolver = z.infer<typeof resolverSchema>;
+export type Resolver = {
+    id: number;
+    name: string;
+    email: string;
+    created_at: string;
+    updated_at: string;
+};
