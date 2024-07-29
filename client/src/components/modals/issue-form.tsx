@@ -21,6 +21,7 @@ import { ApiResponse, Resolver } from "src/types";
 import { z } from "zod";
 import { InputError } from "../ui/input-error";
 import { issueSchema } from "src/schemas/issue";
+import { toast } from "src/hooks/use-toast";
 
 type IssueFormValues = z.infer<typeof issueSchema>;
 
@@ -94,15 +95,27 @@ export function IssueForm() {
             const params = new URLSearchParams(window.location.search);
             const id = params.get("id");
             if (id) {
-                await putIssue({ id, values: data });
+                const response = await putIssue({ id, values: data });
+                toast({ description: response.message });
             } else {
-                await postIssue(data);
+                const response = await postIssue(data);
+                toast({ description: response.message });
             }
             triggerRefresh();
             reset();
             addIssueModal.onClose();
-        } catch (error) {
-            console.error("Error submitting form:", error);
+        } catch (error: any) {
+            let errorMessage = "An error occurred. Please try again.";
+            if (
+                error.response &&
+                error.response.data &&
+                error.response.data.message
+            ) {
+                errorMessage = error.response.data.message;
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+            toast({ description: errorMessage });
         } finally {
             // eslint-disable-next-line no-restricted-globals
             history.pushState(null, "", window.location.pathname);

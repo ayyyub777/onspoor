@@ -1,3 +1,5 @@
+declare module "lucide-react";
+
 export interface ApiResponse<T = any> {
     status: "success" | "error";
     message: string | null;

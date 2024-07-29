@@ -6,6 +6,7 @@ import { Spinner } from "src/components/ui/spinner";
 import Navbar from "src/components/navbar";
 import { ModalProvider } from "src/components/modal-provider";
 import { RefreshProvider } from "src/context/refresh";
+import { Toaster } from "src/components/ui/toaster";
 
 export default function AppLayout() {
     const [isAuth, setIsAuth] = useState<Boolean | null>(null);
@@ -49,6 +50,7 @@ export default function AppLayout() {
             <Navbar user={user} />
             <RefreshProvider>
                 <ModalProvider />
+                <Toaster />
                 <Outlet />
             </RefreshProvider>
         </>

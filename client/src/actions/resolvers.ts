@@ -29,11 +29,13 @@ export const getResolver = async (id: string) => {
 };
 
 export const postResolver = async (values: Values) => {
-    axios({
+    const response: ApiResponse = await axios({
         method: "POST",
         url: "/api/resolvers",
         data: values,
-    });
+    }).then((res) => res.data);
+
+    return response;
 };
 
 export const putResolver = async ({
@@ -43,16 +45,20 @@ export const putResolver = async ({
     id: string;
     values: Values;
 }) => {
-    axios({
+    const response: ApiResponse = await axios({
         method: "PUT",
         url: "/api/resolvers/" + id,
         data: values,
-    });
+    }).then((res) => res.data);
+
+    return response;
 };
 
 export const deleteResolver = async (id: string) => {
-    axios({
+    const response: ApiResponse = await axios({
         method: "DELETE",
         url: "/api/resolvers/" + id,
-    });
+    }).then((res) => res.data);
+
+    return response;
 };

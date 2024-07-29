@@ -10,6 +10,7 @@ import {
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { useRefresh } from "src/context/refresh";
+import { toast } from "src/hooks/use-toast";
 
 export function DeleteIssue() {
     const { triggerRefresh } = useRefresh();
@@ -25,11 +26,22 @@ export function DeleteIssue() {
         let id = params.get("id");
         try {
             if (id) {
-                await deleteIssue(id);
+                const response = await deleteIssue(id);
+                toast({ description: response.message });
             }
             triggerRefresh();
-        } catch (error) {
-            console.error(error);
+        } catch (error: any) {
+            let errorMessage = "An error occurred. Please try again.";
+            if (
+                error.response &&
+                error.response.data &&
+                error.response.data.message
+            ) {
+                errorMessage = error.response.data.message;
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+            toast({ description: errorMessage });
         } finally {
             // eslint-disable-next-line no-restricted-globals
             history.pushState(null, "", window.location.pathname);

@@ -11,6 +11,7 @@ import { postResolver, putResolver } from "src/actions/resolvers";
 import { z } from "zod";
 import { InputError } from "../ui/input-error";
 import { resolverSchema } from "src/schemas/resolver";
+import { toast } from "src/hooks/use-toast";
 
 type ResolverFormValues = z.infer<typeof resolverSchema>;
 
@@ -60,15 +61,27 @@ export function ResolverForm() {
             const params = new URLSearchParams(window.location.search);
             const id = params.get("id");
             if (id) {
-                await putResolver({ id, values: data });
+                const response = await putResolver({ id, values: data });
+                toast({ description: response.message });
             } else {
-                await postResolver(data);
+                const response = await postResolver(data);
+                toast({ description: response.message });
             }
             triggerRefresh();
             reset();
             addResolverModal.onClose();
-        } catch (error) {
-            console.error("Error submitting form:", error);
+        } catch (error: any) {
+            let errorMessage = "An error occurred. Please try again.";
+            if (
+                error.response &&
+                error.response.data &&
+                error.response.data.message
+            ) {
+                errorMessage = error.response.data.message;
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+            toast({ description: errorMessage });
         } finally {
             // eslint-disable-next-line no-restricted-globals
             history.pushState(null, "", window.location.pathname);

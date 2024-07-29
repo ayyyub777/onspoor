@@ -31,11 +31,13 @@ export const getIssue = async (id: string) => {
 };
 
 export const postIssue = async (values: Values) => {
-    axios({
+    const response: ApiResponse = await axios({
         method: "POST",
         url: "/api/issues",
         data: values,
-    });
+    }).then((res) => res.data);
+
+    return response;
 };
 
 export const putIssue = async ({
@@ -45,18 +47,22 @@ export const putIssue = async ({
     id: string;
     values: Values;
 }) => {
-    axios({
+    const response = await axios({
         method: "PUT",
         url: "/api/issues/" + id,
         data: values,
-    });
+    }).then((res) => res.data);
+
+    return response;
 };
 
 export const deleteIssue = async (id: string) => {
-    axios({
+    const response = await axios({
         method: "DELETE",
         url: "/api/issues/" + id,
-    });
+    }).then((res) => res.data);
+
+    return response;
 };
 
 export const getIssuesByDate = async () => {
