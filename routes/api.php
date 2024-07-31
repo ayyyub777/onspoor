@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\IssueController;
 use App\Http\Controllers\ResolverController;
+use App\Http\Controllers\PopulateController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -10,13 +11,17 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {
+    Route::post('/populate', [PopulateController::class, 'populate']);
+});
+
+Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/issues', [IssueController::class, 'index']);
     Route::get('/issues/{id}', [IssueController::class, 'view']);
     Route::post('/issues', [IssueController::class, 'store']);
     Route::put('/issues/{id}', [IssueController::class, 'update']);
     Route::delete('/issues/{id}', [IssueController::class, 'destroy']);
+    Route::get('/issues-by-date', [IssueController::class, 'getIssuesByDate']);
 });
-Route::get('/issues-by-date', [IssueController::class, 'getIssuesByDate']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/resolvers', [ResolverController::class, 'index']);
